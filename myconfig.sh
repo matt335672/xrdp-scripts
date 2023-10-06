@@ -2,7 +2,13 @@
 
 case `uname` in
     Linux)
-        : ${CC:=gcc} ${CFLAGS:=-g -fvar-tracking -Wl,-z,now}
+        : ${CC:=gcc}
+        if [ -z "$CFLAGS" ]; then
+            case "$CC" in
+                clang)  CFLAGS="-g" ;;
+                *)  CFLAGS="-g -fvar-tracking -Wl,-z,now" ;;
+            esac
+        fi
         export CC CFLAGS
         ;;
     FreeBSD)
@@ -27,6 +33,7 @@ flags="$flags --enable-jpeg"
 flags="$flags --with-imlib2"
 flags="$flags --enable-vsock"
 flags="$flags --with-freetype2"
+#flags="$flags --enable-xrdpvr"
 #flags="$flags --disable-painter"
 #flags="$flags --disable-static"
 #flags="$flags --disable-pam --enable-kerberos"
@@ -35,6 +42,7 @@ flags="$flags --with-freetype2"
 #flags="$flags --disable-pam"
 #flags="$flags --disable-rfxcodec"
 #flags="$flags --enable-apparmor"
+flags="$flags --enable-utmp"
 
 if [ "$CC" = "g++" ]; then
     CFLAGS="$CFLAGS -g -Werror"
