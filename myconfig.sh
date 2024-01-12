@@ -12,8 +12,9 @@ case `uname` in
         export CC CFLAGS
         ;;
     FreeBSD)
-        : ${CC:=clang} ${CFLAGS:=-g}
-        export CC CFLAGS
+        : ${CC:=clang} ${CFLAGS:=-g} ${CPPFLAGS:=-I/usr/local/include}
+        : ${LDFLAGS:=-L/usr/local/lib}
+        export CC CFLAGS CPPFLAGS LDFLAGS
         ;;
     *) echo "**Warning: Unknown platform `uname`" >&2
 esac
