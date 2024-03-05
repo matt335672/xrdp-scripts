@@ -5,8 +5,12 @@ case `uname` in
         : ${CC:=gcc}
         if [ -z "$CFLAGS" ]; then
             case "$CC" in
-                clang)  CFLAGS="-g" ;;
-                *)  CFLAGS="-g -fvar-tracking -Wl,-z,now" ;;
+                clang*)  CFLAGS="-g" ;;
+                *)  CFLAGS="-g -fvar-tracking -Wl,-z,now"
+                    if grep -q DH_free common/ssl_calls.c; then
+                        CFLAGS="$CFLAGS -Wno-error=deprecated-declarations"
+                    fi
+                    ;;
             esac
         fi
         export CC CFLAGS
@@ -27,7 +31,8 @@ else
     # xrdp 0.9.16 or earlier
     flags="--enable-xrdpdebug"
 fi
-flags="$flags --enable-fuse --enable-pixman"
+flags="$flags --enable-fuse"
+flags="$flags --enable-pixman"
 flags="$flags --enable-ipv6"
 flags="$flags --enable-painter" ; # Shouldn't be necessary
 flags="$flags --enable-jpeg"
@@ -44,6 +49,7 @@ flags="$flags --with-freetype2"
 #flags="$flags --disable-rfxcodec"
 #flags="$flags --enable-apparmor"
 flags="$flags --enable-utmp"
+flags="$flags --with-libpcsclite"
 
 if [ "$CC" = "g++" ]; then
     CFLAGS="$CFLAGS -g -Werror"
@@ -54,6 +60,8 @@ elif [ "$CC" = "gcc" ]; then
     # cd libipm
     # gcov -o .libs *.c
     #CFLAGS="$CFLAGS -coverage -Wl,-l,gcov"
+    flags="$flags --enable-neutrinordp"
+elif [ "$CC" = "clang" ]; then
     flags="$flags --enable-neutrinordp"
 fi
 exec ./configure $flags

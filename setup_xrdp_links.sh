@@ -25,6 +25,30 @@ for file in *.so*; do
         fi
     fi
 done
+cd /usr/local/lib || exit %?
+for file in libpcsclite-xrdp.so.0.0.0; do
+    if [ -f $file ]; then
+	dest=$(find ~/xrdp -type f -name $file)
+	set -- $dest
+	if [ $# -eq 0 ]; then
+            echo "** Can't find file for $file" >&2
+            exit 1
+        elif [ $# -gt 1 ]; then
+            echo "** Found multiple matches for $file" >&2
+            exit 1
+        else
+            set -- $(file -b $dest)
+            if [ $1 != ELF ]; then
+                echo "Link $dest is not an ELF file" >&2
+                exit 1
+            else
+                sudo ln -sf $dest $file
+            fi
+        fi
+    fi
+done
+
+
 echo "- Setting up binary links"
 set -- \
     SETDIR          /usr/local/bin \
