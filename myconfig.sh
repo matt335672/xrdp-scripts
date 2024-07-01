@@ -39,6 +39,7 @@ flags="$flags --enable-jpeg"
 flags="$flags --with-imlib2"
 flags="$flags --enable-vsock"
 flags="$flags --with-freetype2"
+flags="$flags --enable-ibus"
 #flags="$flags --enable-xrdpvr"
 #flags="$flags --disable-painter"
 #flags="$flags --disable-static"
@@ -64,4 +65,4 @@ elif [ "$CC" = "gcc" ]; then
 elif [ "$CC" = "clang" ]; then
     flags="$flags --enable-neutrinordp"
 fi
-exec ./configure $flags
+exec ./configure $flags "$@"

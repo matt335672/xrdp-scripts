@@ -63,6 +63,10 @@ set -- \
     xrdp            xrdp/.libs/ \
     xrdp-sesman     sesman/.libs/ \
     xrdp-chansrv     sesman/chansrv/.libs/ \
+    SETDIR          /usr/local/libexec/xrdp \
+    waitforx        waitforx/.libs/\
+    xrdp-droppriv   tools/chkpriv/.libs/ \
+    xrdp-sesexec    sesman/sesexec/.libs/
 
 while [ $# -ge 2 ]; do
     if [ $1 = SETDIR ]; then
@@ -82,4 +86,4 @@ cd /usr/local/share/xrdp || exit $?
 for file in sans-10.fv1 sans-18.fv1; do
     sudo ln -sf $HOME/xrdp/xrdp/$file .
 done
-
+sudo ln -sf $HOME/xrdp/tools/chkpriv/xrdp-chkpriv .
