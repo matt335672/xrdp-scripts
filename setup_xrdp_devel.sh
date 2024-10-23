@@ -3,6 +3,12 @@
 
 cd ~
 
+get_cppcheck_ver()
+{
+    set -- $(grep CPPCHECK_VER: ~/xrdp/.github/workflows/build.yml)
+    echo $2
+}
+
 DISTRIBUTION=$(lsb_release -si)
 RELEASE=$(lsb_release -sr)
 
@@ -83,7 +89,7 @@ if [ ! -x /usr/bin/apt ]; then
 else
     echo "- Installing dependencies"
     sudo xrdp/scripts/install_xrdp_build_dependencies_with_apt.sh max $(dpkg --print-architecture) || exit $?
-    sudo xrdp/scripts/install_cppcheck_dependencies_with_apt.sh || exit $?
+    sudo xrdp/scripts/install_cppcheck_dependencies_with_apt.sh $(get_cppcheck_ver) || exit $?
     sudo xorgxrdp/scripts/install_xorgxrdp_build_dependencies_with_apt.sh $(dpkg --print-architecture) || exit $?
 fi
 
@@ -110,7 +116,7 @@ sudo ln -sf $HOME/xorgxrdp/xrdpdev/xorg.conf /etc/X11/xrdp/
 case "$DISTRIBUTION-$RELEASE" in
     Ubuntu-22.04)
         # Use gcc 12 by default
-        sudo apt install gcc-12 g++-12
+        sudo apt-get install -y gcc-12 g++-12
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 150 --slave /usr/bin/g++ g++ /usr/bin/g++-12 --slave /usr/bin/gcov gcov /usr/bin/gcov-12
         ;;
