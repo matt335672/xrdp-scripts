@@ -1,0 +1,25 @@
+module xrdp_devel 1.0.0;
+
+require {
+    type init_t;
+    type user_home_t;
+    type xserver_port_t;
+    type xserver_t;
+    type xauth_home_t;
+    type vnc_port_t;
+    class file { execute open read execute_no_trans map create write };
+    class process { setpgid };
+    class tcp_socket { name_connect };
+    class unix_stream_socket { connectto };
+}
+
+#============= init_t ==============
+#So we can excute progs from home directories
+allow init_t user_home_t:file { execute open read execute_no_trans map create write };
+
+# Execs are unlabelled, so running as init_t
+allow init_t self:process setpgid;
+allow init_t xserver_port_t:tcp_socket name_connect;
+allow init_t vnc_port_t:tcp_socket name_connect;
+allow init_t xserver_t:unix_stream_socket connectto;
+allow init_t xauth_home_t:file { read open };

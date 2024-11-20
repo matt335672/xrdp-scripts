@@ -1,9 +1,17 @@
 #!/bin/sh
 
-PACKAGES=
+cd $(dirname $0) || exit $?
+TE_FILE="$(pwd)/xrdp_devel.te"
+
+if ! [ -f "$TE_FILE" ]; then
+    echo "Can't find $TE_FILE" >&2
+    exit 1
+fi
+
 WORKDIR=$(mktemp -d --tmpdir SELinux.XXXXXXXX)
 [ -z "$WORKDIR" ] && exit 1
-MODULE_TE_SRC="https://src.fedoraproject.org/rpms/xrdp/raw/rawhide/f/xrdp.te"
+
+PACKAGES=
 
 if ! [ -x /usr/bin/make ]; then
     PACKAGES="$PACKAGES make"
@@ -18,11 +26,11 @@ if [ -n "$PACKAGES" ]; then
 fi
 
 cd "$WORKDIR" || exit $?
+cp "$TE_FILE" . || exit $?
 
-wget "$MODULE_TE_SRC" || exit $?
 for variant in targeted; do
     make NAME="$variant" -f /usr/share/selinux/devel/Makefile
-    sudo /usr/sbin/semodule -s "$variant" -i xrdp.pp
+    sudo /usr/sbin/semodule -s "$variant" -i xrdp_devel.pp
     make NAME="$variant" -f /usr/share/selinux/devel/Makefile clean
 done
 
