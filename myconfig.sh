@@ -26,7 +26,7 @@ esac
 cd $(dirname $0) || exit $?
 
 if grep -q -- --enable-devel-all ./configure.ac; then
-    flags="--enable-devel-all" ;#" --disable-devel-logging"
+    flags="--disable-devel-all" ;#" --disable-devel-logging"
 else
     # xrdp 0.9.16 or earlier
     flags="--enable-xrdpdebug"

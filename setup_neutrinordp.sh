@@ -14,7 +14,7 @@ if [ ! -x /usr/local/bin/xfreerdp ]; then
     sudo apt-get install cmake xmlto libssl-dev libx11-dev libxext-dev libxinerama-dev \
   libxcursor-dev libxdamage-dev libxv-dev libxkbfile-dev libasound2-dev libcups2-dev libxml2 libxml2-dev \
   libxrandr-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libxi-dev ffmpeg
-    cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_SSE2=ON . || exit $?
+    cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_SSE2=ON -DWITH_ALSA=OFF . || exit $?
     make || exit $?
     sudo make install
     cd ..

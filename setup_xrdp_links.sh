@@ -1,5 +1,23 @@
 #!/bin/sh
 
+if [ -x /usr/sbin/getenforce ]; then
+    echo "- Running on an SELinux system"
+    if ! [ -x /usr/sbin/semanage -a -x /usr/sbin/restorecon ]; then
+        echo "** Need semanage/restorecon commands to relabel filesystem" >&2
+        exit 1
+    fi
+    do_sudo_semanage()
+    {
+        sudo semanage fcontext --add -t "$1" -f f "$2"
+        sudo restorecon "$2"
+    }
+else
+    do_sudo_semanage()
+    {
+        :
+    }
+fi
+
 echo "- Setting up library links"
 cd /usr/local/lib/xrdp || exit $?
 for file in *.so*; do
@@ -21,6 +39,7 @@ for file in *.so*; do
                 exit 1
             else
                 sudo ln -sf $dest $file
+                do_sudo_semanage lib_t $dest
             fi
         fi
     fi
@@ -43,6 +62,7 @@ for file in libpcsclite-xrdp.so.0.0.0; do
                 exit 1
             else
                 sudo ln -sf $dest $file
+                do_sudo_semanage lib_t $dest
             fi
         fi
     fi
@@ -72,11 +92,12 @@ while [ $# -ge 2 ]; do
     if [ $1 = SETDIR ]; then
         cd $2 || exit $?
     else
-        dest=$HOME/xrdp/$2/$1
+        dest=$HOME/xrdp/$2$1
         if [ ! -x $dest ]; then
             echo "** Warning: Can't find target $dest" >&2
         fi
         sudo ln -sf $dest ./$1
+        do_sudo_semanage bin_t $dest
     fi
     shift 2
 done
