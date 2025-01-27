@@ -49,6 +49,8 @@ flags="$flags --enable-ibus"
 #flags="$flags --disable-pam"
 #flags="$flags --disable-rfxcodec"
 #flags="$flags --enable-apparmor"
+flags="$flags --enable-x264"
+flags="$flags --enable-openh264"
 flags="$flags --enable-utmp"
 flags="$flags --with-libpcsclite"
 
