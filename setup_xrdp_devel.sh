@@ -98,21 +98,6 @@ if [ ! -x /usr/bin/gmake ]; then
     sudo ln -s make /usr/bin/gmake
 fi
 
-echo "- Setting up links to development areas for xorgxrdp"
-MODULES_DIR=/usr/lib64/xorg/modules
-if [ ! -d $MODULES_DIR ]; then
-    MODULES_DIR=/usr/lib/xorg/modules
-fi
-sudo ln -sf $HOME/xorgxrdp/module/.libs/libxorgxrdp.so $MODULES_DIR/libxorgxrdp.so
-sudo ln -sf $HOME/xorgxrdp/xrdpdev/.libs/xrdpdev_drv.so $MODULES_DIR/drivers/xrdpdev_drv.so
-sudo ln -sf $HOME/xorgxrdp/xrdpkeyb/.libs/xrdpkeyb_drv.so $MODULES_DIR/input/xrdpkeyb_drv.so
-sudo ln -sf $HOME/xorgxrdp/xrdpmouse/.libs/xrdpmouse_drv.so $MODULES_DIR/input/xrdpmouse_drv.so
-if [ ! -d /etc/X11/xrdp/ ]; then
-    sudo install -dm 755 -o root -g root /etc/X11/xrdp/
-fi
-
-sudo ln -sf $HOME/xorgxrdp/xrdpdev/xorg.conf /etc/X11/xrdp/
-
 case "$DISTRIBUTION-$RELEASE" in
     Ubuntu-22.04)
         # Use gcc 12 by default

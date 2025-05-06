@@ -108,3 +108,23 @@ for file in sans-10.fv1 sans-18.fv1; do
     sudo ln -sf $HOME/xrdp/xrdp/$file .
 done
 sudo ln -sf $HOME/xrdp/tools/chkpriv/xrdp-chkpriv .
+
+echo "- Setting up /usr/local/include links"
+cd /usr/local/include || exit $?
+sudo rm -r ms-*.h xrdp_*.h
+sudo ln -s ~/xrdp/common/ms-*.h ~/xrdp/common/xrdp_*.h .
+
+echo "- Setting up links to development areas for xorgxrdp"
+MODULES_DIR=/usr/lib64/xorg/modules
+if [ ! -d $MODULES_DIR ]; then
+    MODULES_DIR=/usr/lib/xorg/modules
+fi
+sudo ln -sf $HOME/xorgxrdp/module/.libs/libxorgxrdp.so $MODULES_DIR/libxorgxrdp.so
+sudo ln -sf $HOME/xorgxrdp/xrdpdev/.libs/xrdpdev_drv.so $MODULES_DIR/drivers/xrdpdev_drv.so
+sudo ln -sf $HOME/xorgxrdp/xrdpkeyb/.libs/xrdpkeyb_drv.so $MODULES_DIR/input/xrdpkeyb_drv.so
+sudo ln -sf $HOME/xorgxrdp/xrdpmouse/.libs/xrdpmouse_drv.so $MODULES_DIR/input/xrdpmouse_drv.so
+if [ ! -d /etc/X11/xrdp/ ]; then
+    sudo install -dm 755 -o root -g root /etc/X11/xrdp/
+fi
+
+sudo ln -sf $HOME/xorgxrdp/xrdpdev/xorg.conf /etc/X11/xrdp/
